@@ -20,7 +20,7 @@ public class DetailsActivity extends AppCompatActivity {
         final Button button = findViewById(R.id.button);
         button.setText("Next");
         button.setOnClickListener((v) -> {
-            final Intent intent = new Intent(this, MainActivity.class);
+            final Intent intent = new Intent(this, InfoActivity.class);
             startActivity(intent);
         });
     }
