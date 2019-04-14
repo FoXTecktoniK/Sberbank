@@ -56,6 +56,7 @@ public class SecondActivity extends AppCompatActivity {
     private Messenger messenger = new Messenger(new MyHandler(this));
     private TextView dataTextView;
     private MyService.LocalBinder binder;
+    private boolean attached = false;
 
 
     @Override
@@ -68,8 +69,12 @@ public class SecondActivity extends AppCompatActivity {
     private void init() {
         findViewById(R.id.kill_service).setOnClickListener((v -> {
             final Intent intent = new Intent(this, MyService.class);
+            if (binder != null) {
+                binder.interrupt();
+            }
             unbindService();
             stopService(intent);
+            v.setClickable(false);
         }));
         dataTextView = findViewById(R.id.data_tv);
     }
@@ -81,6 +86,7 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     private void bindService() {
+        attached = true;
         final Intent intent = new Intent(this, MyService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
@@ -92,9 +98,9 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     private void unbindService() {
-        if (binder != null) {
-            binder.interrupt();
-        }
+        if (!attached)
+            return;
+        attached = false;
         unbindService(connection);
     }
 }

@@ -58,11 +58,6 @@ public class MyService extends Service {
     private final Thread executingThread = new Thread(() -> {
         final Random random = new Random(System.currentTimeMillis());
         while (true) {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ignored) {
-                break;
-            }
             if (messengerWeakReference != null && messengerWeakReference.get() != null) {
                 final int position = random.nextInt(names.length);
                 final Message message = Message.obtain();
@@ -74,6 +69,11 @@ public class MyService extends Service {
                     messengerWeakReference.get().send(message);
                 } catch (RemoteException ignored) {
                 }
+            }
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ignored) {
+                break;
             }
         }
 
