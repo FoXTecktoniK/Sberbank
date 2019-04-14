@@ -33,7 +33,7 @@ public class SecondActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             final SecondActivity act = activity.get();
             if (act != null && msg.what == NEW_DATA) {
-                act.dataTextView.setText((String)msg.obj);
+                act.dataTextView.setText(msg.getData().getString(DATA_KEY, "EMPTY"));
             }
         }
     }
@@ -42,7 +42,8 @@ public class SecondActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             if (service instanceof MyService.LocalBinder) {
-                ((MyService.LocalBinder) service).setMessenger(messenger);
+                binder = (MyService.LocalBinder) service;
+                binder.setMessenger(messenger);
             }
         }
 
@@ -54,6 +55,7 @@ public class SecondActivity extends AppCompatActivity {
 
     private Messenger messenger = new Messenger(new MyHandler(this));
     private TextView dataTextView;
+    private MyService.LocalBinder binder;
 
 
     @Override
@@ -66,6 +68,7 @@ public class SecondActivity extends AppCompatActivity {
     private void init() {
         findViewById(R.id.kill_service).setOnClickListener((v -> {
             final Intent intent = new Intent(this, MyService.class);
+            unbindService();
             stopService(intent);
         }));
         dataTextView = findViewById(R.id.data_tv);
@@ -89,6 +92,9 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     private void unbindService() {
+        if (binder != null) {
+            binder.interrupt();
+        }
         unbindService(connection);
     }
 }

@@ -59,10 +59,11 @@ public class MyService extends Service {
         final Random random = new Random(System.currentTimeMillis());
         while (true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(1500);
             } catch (InterruptedException ignored) {
+                break;
             }
-            if (messengerWeakReference.get() != null) {
+            if (messengerWeakReference != null && messengerWeakReference.get() != null) {
                 final int position = random.nextInt(names.length);
                 final Message message = Message.obtain();
                 final Bundle data = new Bundle();
@@ -83,12 +84,12 @@ public class MyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        startSendingMessages();
         return binder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startSendingMessages();
         return START_STICKY;
     }
 
@@ -105,6 +106,11 @@ public class MyService extends Service {
     class LocalBinder extends Binder {
         void setMessenger(@NonNull final Messenger messenger) {
             messengerWeakReference = new WeakReference<>(messenger);
+        }
+
+        void interrupt() {
+            executingThread.interrupt();
+            stopSelf();
         }
     }
 }
