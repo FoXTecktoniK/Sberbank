@@ -1,2 +1,2 @@
 # Sberbank
-Sberbank android school
+Repository for Sberbank android school projects (homeworks)
