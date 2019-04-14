@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class InfoActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "InfoActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,9 +17,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ((TextView) findViewById(R.id.textView)).setText(TAG);
         final Button button = findViewById(R.id.button);
-        button.setText("Next");
+        button.setText("Open First");
         button.setOnClickListener((v) -> {
-            final Intent intent = new Intent(this, DetailsActivity.class);
+            final Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
     }
